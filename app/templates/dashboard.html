@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4">Welcome, {{ current_user.username }}!</h2>
+
+    <!-- Uploaded Content Section -->
+    <h4>Your Uploaded Content</h4>
+    <div class="row">
+        {% for content in uploaded_content %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ content.title }}</h5>
+                    <p>{{ content.description }}</p>
+                    <p><strong>Price:</strong> {{ content.price if content.price else 'Free' }}</p>
+                    <a href="{{ content.content_url }}" class="btn btn-primary" target="_blank">View Content</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p>No content uploaded yet.</p>
+        {% endfor %}
+    </div>
+
+
+    <!-- Purchased Content Section -->
+    <h4>Your Purchased Content</h4>
+    <div class="row">
+        {% for transaction in purchased_content %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ transaction.content.title }}</h5>
+                    <p>{{ transaction.content.description }}</p>
+                    <p><strong>Price:</strong> {{ transaction.amount }}</p>
+                    <a href="{{ transaction.content.content_url }}" class="btn btn-primary" target="_blank">View Content</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p>You haven't purchased any content yet.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Posted Requirements Section -->
+    <h4>Your Posted Requirements</h4>
+    <div class="row">
+        {% for req in posted_requirements %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ req.title }}</h5>
+                    <p>{{ req.description }}</p>
+                    <p><strong>Category:</strong> {{ req.category }}</p>
+                    <a href="{{ url_for('auth.chat', requirement_id=req.id) }}" class="btn btn-primary mt-2">Chat</a>
+                    <a href="{{ url_for('auth.edit_requirement', requirement_id=req.id) }}" class="btn btn-warning mt-2">Edit</a>
+
+                    <form method="POST" action="{{ url_for('auth.delete_requirement', requirement_id=req.id) }}" style="display: inline;">
+                        <button type="submit" class="btn btn-danger mt-2">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p>No requirements posted yet.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Google AdSense Placeholder for Requirements -->
+    <div class="text-center my-4">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="YOUR_AD_CLIENT_ID"
+             data-ad-slot="YOUR_AD_SLOT_ID"
+             data-ad-format="auto"></ins>
+        <script>
+             (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
+    <!-- Chats Section -->
+    <h4>Your Chats</h4>
+    <div class="row">
+        {% for chat in ongoing_chats %}
+        <div class="col-md-6 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ chat.requirement.title }}</h5>
+                    <p>Last Message: {{ chat.content }}</p>
+                    <a href="{{ url_for('auth.chat', requirement_id=chat.requirement.id) }}" class="btn btn-primary">Go to Chat</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

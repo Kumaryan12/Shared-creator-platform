@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Requirement{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4">Edit Requirement</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.title.label }}<br>
+            {{ form.title(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.description.label }}<br>
+            {{ form.description(class="form-control") }}
+        </div>
+        <div class="mb-3">
+            {{ form.category.label }}<br>
+            {{ form.category(class="form-select") }}
+        </div>
+        <div class="mb-3">
+            {{ form.contact_info.label }}<br>
+            {{ form.contact_info(class="form-control") }}
+        </div>
+        <div class="text-center">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+</div>
+{% endblock %}

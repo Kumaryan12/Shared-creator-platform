@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}View Requirements{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Available Requirements</h2>
+
+    <div class="row">
+        {% for requirement in requirements %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ requirement.title }}</h5>
+                    <p>{{ requirement.description }}</p>
+                    <p><strong>Category:</strong> {{ requirement.category }}</p>
+                    <p><strong>Posted By:</strong> {{ requirement.user.username }}</p>
+                    <a href="{{ url_for('auth.chat', requirement_id=requirement.id) }}" class="btn btn-primary">Chat</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p>No requirements available to view.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

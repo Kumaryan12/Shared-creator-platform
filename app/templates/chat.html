@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% block title %}Chat{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Chat About: <span class="text-primary">{{ requirement.title }}</span></h2>
+
+    <!-- Chat Box -->
+    <div id="chat-box" class="chat-box border rounded p-3 bg-light">
+        {% for message in messages %}
+        <div class="d-flex {% if message.sender_id == current_user.id %}justify-content-end{% else %}justify-content-start{% endif %} mb-3">
+            <div class="chat-bubble {% if message.sender_id == current_user.id %}chat-bubble-right{% else %}chat-bubble-left{% endif %}">
+                <div class="chat-header">
+                    <strong>{{ 'You' if message.sender_id == current_user.id else message.sender.username }}</strong>
+                    <small class="text-muted">{{ message.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+                </div>
+                <div class="chat-message">
+                    {{ message.content }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Message Form -->
+    <form id="message-form" class="mt-3 d-flex">
+        <input type="text" id="message-input" class="form-control me-2" placeholder="Type your message..." required>
+        <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+</div>
+
+<!-- Socket.IO Client -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.0/socket.io.js"></script>
+<script>
+    const socket = io.connect();
+    const requirementId = {{ requirement.id }};
+    const userId = {{ current_user.id }};
+    const chatBox = document.getElementById('chat-box');
+    const messageForm = document.getElementById('message-form');
+    const messageInput = document.getElementById('message-input');
+
+    // Auto-scroll to bottom on new messages
+    function scrollToBottom() {
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Join the chat room
+    socket.emit('join_room', { user_id: userId, requirement_id: requirementId });
+
+    // Receive messages
+    socket.on('receive_message', (data) => {
+        const div = document.createElement('div');
+        div.className = `d-flex ${data.sender_id === userId ? 'justify-content-end' : 'justify-content-start'} mb-3`;
+        div.innerHTML = `
+            <div class="chat-bubble ${data.sender_id === userId ? 'chat-bubble-right' : 'chat-bubble-left'}">
+                <div class="chat-header">
+                    <strong>${data.sender_id === userId ? 'You' : data.sender_name}</strong>
+                    <small class="text-muted">${data.timestamp}</small>
+                </div>
+                <div class="chat-message">
+                    ${data.content}
+                </div>
+            </div>
+        `;
+        chatBox.appendChild(div);
+        scrollToBottom();
+    });
+
+    // Send a message
+    messageForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const message = messageInput.value;
+        socket.emit('send_message', {
+            sender_id: userId,
+            receiver_id: {{ requirement.user_id }},
+            requirement_id: requirementId,
+            content: message
+        });
+        messageInput.value = '';
+    });
+
+    // Scroll to the bottom on page load
+    scrollToBottom();
+</script>
+
+<!-- Custom CSS -->
+<style>
+    .chat-box {
+        max-height: 500px;
+        overflow-y: auto;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-bubble {
+        max-width: 75%;
+        padding: 10px 15px;
+        border-radius: 10px;
+        color: #fff;
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    .chat-bubble-right {
+        background-color: #007bff;
+        text-align: right;
+    }
+
+    .chat-bubble-left {
+        background-color: #6c757d;
+        text-align: left;
+    }
+
+    .chat-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        margin-bottom: 5px;
+    }
+
+    .chat-message {
+        word-wrap: break-word;
+    }
+
+    #message-input {
+        border-radius: 0.5rem;
+        padding: 10px;
+    }
+
+    #message-form button {
+        border-radius: 0.5rem;
+        padding: 10px 20px;
+    }
+</style>
+{% endblock %}

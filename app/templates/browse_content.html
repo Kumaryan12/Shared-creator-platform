@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Browse Content{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4">Explore Content</h2>
+    <div class="row">
+        {% for content in contents %}
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">{{ content.title }}</h5>
+                    <p class="card-text">{{ content.description }}</p>
+                    <p><strong>Price:</strong> {{ content.price if content.price else 'Free' }}</p>
+                    <a href="{{ content.content_url }}" class="btn btn-primary" target="_blank">View Content</a>
+                    {% if current_user.is_authenticated %}
+                        <form method="POST" action="{{ url_for('auth.purchase_content', content_id=content.id) }}" class="mt-2">
+                            <button type="submit" class="btn btn-success w-100">Purchase</button>
+                        </form>
+                    {% else %}
+                        <p class="text-muted">Login to purchase content.</p>
+                    {% endif %}
+                </div>
+                <div class="card-footer">
+                    <small class="text-muted">Uploaded by: {{ content.creator.username }}</small>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center">
+            <p>No content available yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

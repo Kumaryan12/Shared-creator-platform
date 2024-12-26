@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="container text-center my-5">
+    <!-- Welcome Section -->
+    <h1 class="display-4 fw-bold mb-3">Welcome to the <span class="text-primary">Shared Creator Platform!</span></h1>
+    <p class="lead mb-5">A platform where creators share their content and users explore amazing creations.</p>
+
+    <!-- Call-to-Action Button -->
+    <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-4 py-2 shadow" id="get-started-btn">
+        Get Started
+    </a>
+
+    <!-- Features Section -->
+    <div class="row mt-5">
+        <!-- Feature 1 -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100 hover-effect">
+                <div class="card-body">
+                    <i class="fas fa-user-edit fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">For Creators</h5>
+                    <p class="card-text">Easily upload and share your unique creations with a wide audience.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Feature 2 -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100 hover-effect">
+                <div class="card-body">
+                    <i class="fas fa-search fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">For Explorers</h5>
+                    <p class="card-text">Browse, discover, and enjoy premium content from talented creators.</p>
+                </div>
+            </div>
+        </div>
+        <!-- Feature 3 -->
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100 hover-effect">
+                <div class="card-body">
+                    <i class="fas fa-comments fa-3x text-warning mb-3"></i>
+                    <h5 class="card-title">Collaborate</h5>
+                    <p class="card-text">Connect with like-minded individuals and collaborate on exciting projects.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom CSS for Home Page -->
+<style>
+    #get-started-btn {
+        transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    #get-started-btn:hover {
+        transform: scale(1.1);
+        background-color: #0056b3; /* Darker blue */
+    }
+
+    .hover-effect {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .hover-effect:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-title {
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
